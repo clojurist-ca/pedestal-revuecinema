@@ -1,0 +1,8 @@
+target/
+tmp/
+logs/
+checkouts/
+
+# No need to store APPC container images or signatures
+*.aci
+*.asc

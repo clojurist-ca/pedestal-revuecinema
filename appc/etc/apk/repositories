@@ -1,0 +1,3 @@
+http://dl-4.alpinelinux.org/alpine/v3.3/main
+# We need to add this repository in order to be able to install openjdk
+http://dl-4.alpinelinux.org/alpine/v3.3/community
