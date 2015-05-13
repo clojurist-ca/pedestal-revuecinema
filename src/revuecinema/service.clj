@@ -14,7 +14,7 @@
    [io.pedestal.log :as log]
    [ring.util.response :as ring-resp])
   (:require
-   [ca.clojurist.revuecinema :as rc]))
+   [revuecinema.fetch :as fetch]))
 
 (defn to-json
   [show-seq]
@@ -33,11 +33,6 @@
   [movie-seq ^LocalDate d]
   (filterv #(= (:date %) d) movie-seq))
 
-(defn movies-for-today
-  [movie-seq]
-  (let [today (LocalDate/now)]
-    (movies-for-date movie-seq today)))
-
 (defhandler movies-page
   [request]
   (log/info "in movies-page")
@@ -46,22 +41,10 @@
   (let [movies (get request :movies)]
     (ring-resp/response movies)))
 
-(defhandler movies-for-today-page
-  [request]
-  (log/info "in movies-for-today-page")
-  (if-let [movie-seq (get request :movies)]
-    (ring-resp/response (movies-for-today movie-seq))
-    (ring-resp/response {:status 404 :body "No movie listings available for today"})))
-
 (defhandler root-page
   [request]
   ;; TODO return a HATEOAS document
   (ring-resp/response "root"))
-
-(defon-request fetch-movies
-  [request]
-  (let [movie-seq (rc/convert rc/base-url)]
-    (assoc request :movies movie-seq)))
 
 (defhandler movies-for-date-page
   [request]
@@ -75,7 +58,7 @@
 
 (defroutes routes
   [[["/" {:get root-page}
-     ["/movies" ^:interceptors [fetch-movies]
+     ["/movies" ^:interceptors [fetch/movies]
       {:get movies-page}
       ["/:date" ^:constraints {:date #"today|\d{4}-\d{2}-\d{2}"}
        {:get movies-for-date-page}]
