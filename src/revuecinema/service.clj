@@ -16,6 +16,18 @@
   (:require
    [revuecinema.fetch :as fetch]))
 
+;; NB: Pedestal 0.4.0 is introducing a new Interceptor API:
+;;   https://github.com/pedestal/pedestal/pull/301
+;; that should be used in order to avoid issues like:
+;;   https://github.com/pedestal/pedestal/issues/308
+;; In particular, the new API is required when performing AOT compilation.
+;;
+;; The gist of the new API is that it should be used in preference to
+;; the old interceptor macros, which had issues when generating correct
+;; interceptor classes at compile time (for AOT).
+
+;; Cf. Pedestal body-params interceptor for JSON/transit parsing
+;; support.
 (defn to-json
   [show-seq]
   ;; Turn :date (LocalDate), :time (LocalTime),
@@ -33,28 +45,33 @@
   [movie-seq ^LocalDate d]
   (filterv #(= (:date %) d) movie-seq))
 
-(defhandler movies-page
-  [request]
-  (log/info "in movies-page")
-  ;; Pull the movies data from request after it was put there by an
-  ;; interceptor.
-  (let [movies (get request :movies)]
-    (ring-resp/response movies)))
+(def movies-page
+  (interceptor/handler
+   ::movies-page
+   (fn [request]
+     (log/info "in movies-page")
+     ;; Pull the movies data from request after it was put there by an
+     ;; interceptor.
+     (let [movies (get request :movies)]
+       (ring-resp/response movies)))))
 
-(defhandler root-page
-  [request]
-  ;; TODO return a HATEOAS document
-  (ring-resp/response "root"))
+(def root-page
+  (interceptor/handler
+   ::root-page
+   (fn [request]
+     ;; TODO return a HATEOAS document
+     (ring-resp/response "root"))))
 
-(defhandler movies-for-date-page
-  [request]
-  (if-let [date-str (get-in request [:path-params :date])]
-    (let [date (if (= "today" date-str)
-                 (LocalDate/now)
-                 (LocalDate/parse date-str))
-          movies-seq (get request :movies)
-          movies (movies-for-date movies-seq date)]
-      (ring-resp/response movies))))
+(def movies-for-date-page
+  (interceptor/handler
+   (fn [request]
+     (if-let [date-str (get-in request [:path-params :date])]
+       (let [date (if (= "today" date-str)
+                    (LocalDate/now)
+                    (LocalDate/parse date-str))
+             movies-seq (get request :movies)
+             movies (movies-for-date movies-seq date)]
+         (ring-resp/response movies))))))
 
 (defroutes routes
   [[["/" {:get root-page}
