@@ -1,4 +1,4 @@
-FROM java:8
+FROM java:openjdk-8-jre
 MAINTAINER Robert Medeiros <robert@crimeminister.org>
 
 ADD target/revuecinema-0.0.1-SNAPSHOT-standalone.jar /srv/revuecinema.jar
