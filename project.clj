@@ -14,9 +14,9 @@
                  [org.clojure/core.typed "0.3.22"]
                  [org.clojure/data.json "0.2.6"]
                  [org.clojure/test.check "0.9.0"]
-                 [org.slf4j/jcl-over-slf4j "1.7.16" :exclusions [org.slf4j/slf4j-api]]
-                 [org.slf4j/jul-to-slf4j "1.7.16" :exclusions [org.slf4j/slf4j-api]]
-                 [org.slf4j/log4j-over-slf4j "1.7.16" :exclusions [org.slf4j/slf4j-api]]
+                 [org.slf4j/jcl-over-slf4j "1.7.18" :exclusions [org.slf4j/slf4j-api]]
+                 [org.slf4j/jul-to-slf4j "1.7.18" :exclusions [org.slf4j/slf4j-api]]
+                 [org.slf4j/log4j-over-slf4j "1.7.18" :exclusions [org.slf4j/slf4j-api]]
                  [prismatic/schema "1.0.5"]]
   :min-lein-version "2.0.0"
   :resource-paths ["config", "resources"]
