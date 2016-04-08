@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+      tier: backend
+      type: api
+  name: api-revuecinema
+  namespace: default
+spec:
+  ports:
+  - port: 8000
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    run: revuecinema
+
+---
+
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  labels:
+    tier: backend
+    type: api
+  name: revuecinema
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    run: revuecinema
+  template:
+    metadata:
+      labels:
+        run: revuecinema
+    spec:
+      containers:
+      - image: revuecinema:0.0.1-SNAPSHOT
+        imagePullPolicy: IfNotPresent
+        name: revuecinema
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
