@@ -2,3 +2,6 @@ target/
 tmp/
 logs/
 checkouts/
+
+# No need to store APPC container images
+*.aci

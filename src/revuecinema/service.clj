@@ -110,5 +110,5 @@
               ::bootstrap/resource-path "/public"
 
               ::bootstrap/type :jetty
-              ;;::bootstrap/host "localhost"
+              ::bootstrap/host "0.0.0.0"
               ::bootstrap/port 8000})
