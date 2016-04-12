@@ -6,6 +6,7 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+VERSION=0.0.1-SNAPSHOT
 TMPFS_PATH="tmp/"
 WORK_PATH_FLAG="--work-path ${TMPFS_PATH}"
 DEBUG_FLAG="--debug"
@@ -35,7 +36,7 @@ trap acbuildEnd EXIT
 acbuild ${FLAGS} set-name org.crimeminister/api-revuecinema
 
 # Store the version as a label
-acbuild ${FLAGS} label add version "0.0.1-SNAPSHOT"
+acbuild ${FLAGS} label add version "${VERSION}"
 
 # Based on alpine
 acbuild ${FLAGS} dep add quay.io/coreos/alpine-sh
@@ -51,10 +52,16 @@ acbuild ${FLAGS} environment add PORT 8000
 acbuild ${FLAGS} port add http tcp 8000
 
 # Copy the app to the ACI
-acbuild ${FLAGS} copy target/revuecinema-0.0.1-SNAPSHOT-standalone.jar /srv/revuecinema.jar
+acbuild ${FLAGS} copy target/revuecinema-${VERSION}-standalone.jar /srv/revuecinema.jar
 
 # Run nodejs with the app
 acbuild ${FLAGS} set-exec -- /usr/bin/java -jar /srv/revuecinema.jar
 
 # Write the result
-acbuild ${FLAGS} write --overwrite api-revuecinema-0.0.1-SNAPSHOT-linux-amd64.aci
+acbuild ${FLAGS} write --overwrite api-revuecinema-${VERSION}-linux-amd64.aci
+
+# Change to be owned by non-root user
+#chown $USER:$USER api-revuecinema-${VERSION}-linux-amd64.aci
+
+# Sign the ACI producing a detached signature
+#keybase sign --detached --infile=api-revuecinema-${VERSION}-linux-amd64.aci --outfile=api-revuecinema-${VERSION}-linux-amd64.aci.asc
