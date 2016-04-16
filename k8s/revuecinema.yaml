@@ -1,40 +1,41 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: revuecinema
+  namespace: default
   labels:
       tier: backend
       type: api
-  name: api-revuecinema
-  namespace: default
+      name: revuecinema
 spec:
+  type: LoadBalancer
+  selector:
+    tier: backend
+    type: api
+    name: revuecinema
   ports:
-  - port: 8000
+  - port: 80
     protocol: TCP
     targetPort: 8000
-  selector:
-    run: revuecinema
 
 ---
 
-apiVersion: v1
-kind: ReplicationController
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
-  labels:
-    tier: backend
-    type: api
   name: revuecinema
   namespace: default
 spec:
-  replicas: 2
-  selector:
-    run: revuecinema
+  replicas: 1
   template:
     metadata:
       labels:
-        run: revuecinema
+        tier: backend
+        type: api
+        name: revuecinema
     spec:
       containers:
-      - image: revuecinema:0.0.1-SNAPSHOT
+      - image: gcr.io/halogen-proxy-749/revuecinema:0.0.1-SNAPSHOT
         imagePullPolicy: IfNotPresent
         name: revuecinema
         ports:
