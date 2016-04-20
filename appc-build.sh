@@ -58,7 +58,7 @@ acbuild ${FLAGS} copy target/revuecinema-${VERSION}-standalone.jar /srv/revuecin
 acbuild ${FLAGS} set-exec -- /usr/bin/java -jar /srv/revuecinema.jar
 
 # Write the result
-acbuild ${FLAGS} write --overwrite api-revuecinema-${VERSION}-linux-amd64.aci
+acbuild ${FLAGS} write --overwrite api-revuecinema-${VERSION,,[A-Z]}-linux-amd64.aci
 
 # Change to be owned by non-root user
 #chown $USER:$USER api-revuecinema-${VERSION}-linux-amd64.aci
