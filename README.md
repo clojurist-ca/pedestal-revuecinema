@@ -1,6 +1,12 @@
-# revuecinema
+# pedestal-revuecinema
 
-FIXME
+## Scraper
+
+Run the web scraper with the command:
+
+```
+$ lein run -m ca.clojurist.revuecinema
+```
 
 ## Getting Started
 
@@ -21,4 +27,3 @@ To learn more about configuring Logback, read its [documentation](http://logback
 
 ## Links
 * [Other examples](https://github.com/pedestal/samples)
-
